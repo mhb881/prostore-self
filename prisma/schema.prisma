@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid 数据库层面生成uuid
+// @id @default(uuid()) @db.Uuid Prisma Client 在插入数据前生成 UUID（v4）
+
+// 品牌表（一对多：一个品牌对应多个商品）
+model Brand {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  name      String    @unique // 品牌名称唯一
+  logo      String? // 品牌logo
+  products  Product[] // 关联的商品
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// 分类表（多对多：一个分类对应多个商品，一个商品对应多个分类）
+model Category {
+  id        String     @id @default(uuid(7)) @db.Uuid
+  name      String     @unique // 分类名称唯一
+  slug      String     @unique // 分类唯一标识（用于URL）
+  parentId  String?    @db.Uuid // 父分类ID（支持多级分类）
+  parent    Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryHierarchy")
+  products  Product[]  @relation("ProductCategories") // 关联的商品
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+// 优化后的商品表
+model Product {
+  id          String   @id @default(uuid(7)) @db.Uuid // 显式指定主键和生成规则
+  name        String // 商品名称
+  slug        String   @unique(map: "product_slug_idx") // 商品唯一标识（用于URL）
+  category    String
+  images      String[] // 商品图片URL数组
+  description String // 商品描述
+  stock       Int      @default(0) // 库存，默认0
+  price       Decimal  @default(0) @db.Decimal(12, 2) // 价格，指定精度（12位总长度，2位小数）
+  rating      Decimal  @default(0) @db.Decimal(3, 1) // 评分，比如4.5、5.0
+  numReviews  Int      @default(0) // 评论数，默认0
+  isFeatured  Boolean  @default(false) // 是否精选，默认false
+  banner      String? // 可选横幅图
+  createdAt   DateTime @default(now()) @db.Timestamp(6) // 创建时间
+  updatedAt   DateTime @updatedAt // 新增更新时间
+
+  // 关联关系
+  brandId    String?    @db.Uuid // 品牌ID（外键）
+  brand      Brand?     @relation(fields: [brandId], references: [id]) // 关联品牌（一对多）
+  categories Category[] @relation("ProductCategories") // 关联分类（多对多）
+}
