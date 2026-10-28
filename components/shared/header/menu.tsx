@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/sheet";
 import { EllipsisVertical, ShoppingCartIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
+import UserButton from "./user-button";
 
 const Menu = () => {
   // 定义菜单项配置，便于统一管理
@@ -22,7 +23,7 @@ const Menu = () => {
     {
       icon: <UserIcon className="h-5 w-5 mr-2" />,
       label: "登录",
-      href: "/login", // 修正原代码中登录链接指向 cart 的错误
+      href: "/sign-in", // 修正原代码中登录链接指向 cart 的错误
       variant: "default",
     },
   ];
@@ -36,7 +37,7 @@ const Menu = () => {
         </div>
 
         {/* 循环渲染菜单项，保持样式统一 */}
-        {menuItems.map((item, index) => (
+        {/* {menuItems.map((item, index) => (
           <Button
             key={index}
             asChild
@@ -48,7 +49,17 @@ const Menu = () => {
               <span>{item.label}</span>
             </Link>
           </Button>
-        ))}
+        ))} */}
+        <Button asChild variant={"ghost"} className="  transition-all ">
+          <Link href={"/cart"} className=" flex items-center">
+            <span>
+              {" "}
+              <ShoppingCartIcon className="h-5 w-5 mr-2" />
+            </span>
+            <span>{"购物车"}</span>
+          </Link>
+        </Button>
+        <UserButton />
       </nav>
 
       {/* 移动端菜单 (md以下显示) */}
@@ -75,7 +86,7 @@ const Menu = () => {
             </SheetTitle>
             <ModeToggle />
             {/* 移动端菜单项 - 更大的点击区域，更好的视觉层级 */}
-            {menuItems.map((item, index) => (
+            {/* {menuItems.map((item, index) => (
               <Button
                 key={index}
                 asChild
@@ -88,7 +99,29 @@ const Menu = () => {
                   <span>{item.label}</span>
                 </Link>
               </Button>
-            ))}
+            ))} */}
+            <Button asChild variant={"ghost"} className=" text-base" size="lg">
+              <Link href={"/cart"} className="w-full flex items-center">
+                <span>
+                  {" "}
+                  <ShoppingCartIcon className="h-5 w-5 mr-2" />
+                </span>
+                <span>{"购物车"}</span>
+              </Link>
+            </Button>
+            <Button
+              asChild
+              variant={"default"}
+              className=" text-base"
+              size="lg"
+            >
+              <Link href={"/sign-in"} className="w-full flex items-center">
+                <span>
+                  <UserIcon className="h-5 w-5 mr-2" />
+                </span>
+                <span>{"登录"}</span>
+              </Link>
+            </Button>
             <SheetDescription></SheetDescription>
           </SheetContent>
         </Sheet>

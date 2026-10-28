@@ -3,8 +3,8 @@ import { APP_NAME } from "@/lib/constants";
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   return (
-    <footer className="border-t">
-      <div className="p-5 flex-center">
+    <footer className="mt-10 border-t">
+      <div className="flex-center p-5">
         {currentYear} {APP_NAME}. All rights reserved.
       </div>
     </footer>

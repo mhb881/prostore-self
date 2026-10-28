@@ -7,12 +7,23 @@ const eslintConfig = defineConfig([
   ...nextTs,
   // Override default ignores of eslint-config-next.
   globalIgnores([
-    // Default ignores of eslint-config-next:
+    // 保留忽略规则（也可按需修改）
     ".next/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    rules: {
+      "no-unused-vars": "warn",
+      // 统一双引号
+      quotes: ["warn", "double"],
+      // 统一分号
+      semi: ["warn", "always"],
+      // console.log 警告
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+    },
+  },
 ]);
 
 export default eslintConfig;
